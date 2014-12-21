@@ -12,7 +12,7 @@ defmodule JB.Mixfile do
   #
   # Type `mix help compile.app` for more information
   def application do
-    [applications: [:logger],
+    [applications: [:httpoison, :logger],
       mod: {JB, []}]
   end
 
@@ -27,6 +27,8 @@ defmodule JB.Mixfile do
   # Type `mix help deps` for more examples and options
   defp deps do
     [{:floki, git: "https://github.com/philss/floki"},
-    {:mongo, git: "https://github.com/checkiz/elixir-mongo"}]
+    {:mongo, git: "https://github.com/checkiz/elixir-mongo"},
+    {:httpoison, "~> 0.5"}
+    ]
   end
 end

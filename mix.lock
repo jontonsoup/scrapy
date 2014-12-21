@@ -1,3 +1,6 @@
 %{"bson": {:hex, :bson, "0.4.2"},
   "floki": {:git, "https://github.com/philss/floki", "c75f7765252d326f8b1b48a0d18b424222da2603", []},
+  "hackney": {:hex, :hackney, "0.14.3"},
+  "httpoison": {:hex, :httpoison, "0.5.0"},
+  "idna": {:hex, :idna, "1.0.1"},
   "mongo": {:git, "https://github.com/checkiz/elixir-mongo", "e83763e78d4cd8404aa5303d16b2cd2d8d89ceb0", []}}
