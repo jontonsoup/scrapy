@@ -14,17 +14,21 @@ defmodule JB.Scraper do
     urls |> Enum.map(
       fn(url_object) ->
         %{_id: _, url: url, scraped: scraped?} = url_object
-        if not scraped? do
-          Apex.ap url
-          # urls_for_page(url)
-
+        if url && not scraped? do
+          Logger.info("#{url}")
+          Task.async(fn(url) -> scrape_url(url) end)
+          Logger.info("ended")
         end
       end)
+    scrape
   end
 
   def scrape_url(url) do
+    Logger.info("Scraping #{url}")
     urls_for_page(url)
-      |> Enum.map(fn(url) -> JB.Urls.insert_url(url) end)
+      |> Enum.map(fn(url) ->
+        JB.Urls.insert_url(url)
+      end)
     JB.Urls.visit!(url)
   end
 
