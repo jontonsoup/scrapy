@@ -2,8 +2,7 @@ defmodule JB.Scraper do
   require Logger
 
   def start_link(opts) do
-    urls = JB.Populator.populate_url_list
-    urls |> Enum.map(fn(url) -> JB.Urls.insert_url(url) end)
+    JB.Populator.populate_url_list
 
     Logger.info "Finished Inserting Urls"
     scrape
@@ -16,13 +15,20 @@ defmodule JB.Scraper do
       fn(url_object) ->
         %{_id: _, url: url, scraped: scraped?} = url_object
         if not scraped? do
+          Apex.ap url
           # urls_for_page(url)
 
         end
       end)
   end
 
-  def urls_for_page(url) do
+  def scrape_url(url) do
+    urls_for_page(url)
+      |> Enum.map(fn(url) -> JB.Urls.insert_url(url) end)
+    JB.Urls.visit!(url)
+  end
+
+  defp urls_for_page(url) do
     {:ok, html} = HTTPoisonService.get(url)
 
     urls = html.body
@@ -44,7 +50,5 @@ defmodule JB.Scraper do
     end
   end
 
-  defp scrape_url(url) do
 
-  end
 end
