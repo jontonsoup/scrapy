@@ -9,7 +9,7 @@ defmodule JB.Urls do
     MongoService.find(%{scraped: false})
   end
 
-  def visit!(url) do
-    MongoService.insert(%{url: url}, %{url: url, scraped: true})
+  def visit!(url, html) do
+    MongoService.insert(%{url: url}, %{url: url, scraped: true, html: html})
   end
 end

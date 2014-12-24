@@ -7,9 +7,14 @@ defmodule JB do
   def start(_type, _args) do
     import Supervisor.Spec, warn: true
 
+    if Mix.env == :test do
+      db = "test"
+    else
+      db = "simply_hired_urls"
+    end
 
     children = [
-      worker(MongoService, []),
+      worker(MongoService, [db]),
       worker(JB.Scraper, [[name: @scraper_name]])
     ]
 

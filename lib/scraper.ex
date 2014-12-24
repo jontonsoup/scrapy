@@ -2,7 +2,7 @@ defmodule JB.Scraper do
   require Logger
 
   def start_link(opts) do
-    JB.Populator.populate_url_list
+    JB.Populator.populate_url_list(Dotenv.get("start_url"))
 
     Logger.info "Finished Inserting Urls"
     scrape
@@ -11,35 +11,48 @@ defmodule JB.Scraper do
 
   def scrape do
     urls = JB.Urls.unscraped_urls
-    urls |> Enum.map(
-      fn(url_object) ->
-        %{_id: _, url: url, scraped: scraped?} = url_object
-        if url && not scraped? do
-          Logger.info("#{url}")
-          Task.async(fn(url) -> scrape_url(url) end)
-          Logger.info("ended")
-        end
-      end)
+    if urls do
+      scrape_urls(urls)
+    end
     scrape
   end
 
-  def scrape_url(url) do
-    Logger.info("Scraping #{url}")
-    urls_for_page(url)
-      |> Enum.map(fn(url) ->
+  def scrape_urls(urls) do
+    if not Enum.empty? urls do
+      Enum.map(urls, &(url_matcher(&1)))
+    end
+  end
+
+  defp url_matcher(url_object) do
+    %{_id: _, url: url, scraped: scraped?} = url_object
+    scrape_url(url, scraped?)
+    # {:ok, pid} = Task.Supervisor.start_link()
+    # Task.Supervisor.async(pid, JB.Scraper, :scrape_url, [url, scraped?])
+  end
+
+  defp scrape_url(url, scraped? \\ false) do
+    if not scraped? do
+      {urls, body} = urls_for_page(url)
+      urls |> Enum.map(fn(url) ->
         JB.Urls.insert_url(url)
       end)
-    JB.Urls.visit!(url)
+      JB.Urls.visit!(url, body)
+    end
   end
 
   defp urls_for_page(url) do
-    {:ok, html} = HTTPoisonService.get(url)
+    body = HTTPService.get(url)
+    if body != "" do
+      urls = urls_for_html(body)
+      {clean_urls(urls), body}
+    else
+      {[], ""}
+    end
+  end
 
-    urls = html.body
-    |> FlokiService.find("a")
-    |> FlokiService.attribute("href")
-
-    clean_urls(urls)
+  defp urls_for_html(body) do
+    anchors = body |> FlokiService.find("a")
+    anchors |> FlokiService.attribute("href")
   end
 
   defp clean_urls(urls) do
@@ -47,12 +60,10 @@ defmodule JB.Scraper do
   end
 
   defp clean_url(url) do
-    if Regex.match?(~r/http:\/\/www.simplyhired.com\//, url) do
+    if Regex.match?(~r/simplyhired.com\//, url) do
       url
     else
-      "http://simplyhired.com" <> url
+      Dotenv.get("base_url") <> url
     end
   end
-
-
 end

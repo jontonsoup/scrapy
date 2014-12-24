@@ -1,12 +1,12 @@
 defmodule MongoService do
   require Logger
 
-  def start_link do
+  def start_link(db) do
     {:ok, pid} = Agent.start_link(
         fn ->
           mongo = Mongo.connect!
-          db = mongo |> Mongo.db("simply_hired_urls")
-          collection = db |> Mongo.Db.collection("urls")
+          db_handle = mongo |> Mongo.db(db)
+          collection = db_handle |> Mongo.Db.collection("urls")
         end,
         name: :mongo_service
     )
