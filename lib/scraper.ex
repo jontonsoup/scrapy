@@ -60,7 +60,7 @@ defmodule JB.Scraper do
   end
 
   defp clean_url(url) do
-    if Regex.match?(~r/simplyhired.com\//, url) do
+    if Regex.match?(~r/#{Dotenv.get("regex_url")}/, url) do
       url
     else
       Dotenv.get("base_url") <> url
