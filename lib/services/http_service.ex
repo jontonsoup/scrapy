@@ -19,7 +19,7 @@ defmodule HTTPService do
       %HTTPotion.HTTPError{message: message} ->
         Logger.info(message)
         ""
-      resposne ->
+      response ->
         Logger.info("Unrecognized response: #{inspect response}")
         ""
     end
