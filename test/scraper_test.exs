@@ -1,4 +1,4 @@
-defmodule JBTest.Scraper do
+defmodule ScrapyTest.Scraper do
   use ExUnit.Case, async: false
   use ExVCR.Mock
 

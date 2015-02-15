@@ -1,4 +1,4 @@
-defmodule JBTest.MongoService do
+defmodule ScrapyTest.MongoService do
   use ExUnit.Case, async: false
 
   setup do

@@ -1,4 +1,4 @@
-defmodule JB.Mixfile do
+defmodule Scrapy.Mixfile do
   use Mix.Project
 
   def project do
@@ -13,7 +13,7 @@ defmodule JB.Mixfile do
   # Type `mix help compile.app` for more information
   def application do
     [applications: [:floki, :logger, :dotenv],
-      mod: {JB, []}]
+      mod: {Scrapy, []}]
   end
 
   # Dependencies can be Hex packages:

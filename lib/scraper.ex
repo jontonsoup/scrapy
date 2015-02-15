@@ -1,8 +1,8 @@
-defmodule JB.Scraper do
+defmodule Scrapy.Scraper do
   require Logger
 
   def start_link(opts) do
-    JB.Populator.populate_url_list(Dotenv.get("start_url"))
+    Scrapy.Populator.populate_url_list(Dotenv.get("start_url"))
 
     Logger.info "Finished Inserting Urls"
     scrape
@@ -10,7 +10,7 @@ defmodule JB.Scraper do
   end
 
   def scrape do
-    urls = JB.Urls.unscraped_urls
+    urls = Scrapy.Urls.unscraped_urls
     if urls do
       scrape_urls(urls)
     end
@@ -27,16 +27,16 @@ defmodule JB.Scraper do
     %{_id: _, url: url, scraped: scraped?} = url_object
     scrape_url(url, scraped?)
     # {:ok, pid} = Task.Supervisor.start_link()
-    # Task.Supervisor.async(pid, JB.Scraper, :scrape_url, [url, scraped?])
+    # Task.Supervisor.async(pid, Scrapy.Scraper, :scrape_url, [url, scraped?])
   end
 
   defp scrape_url(url, scraped? \\ false) do
     if not scraped? do
       {urls, body} = urls_for_page(url)
       urls |> Enum.map(fn(url) ->
-        JB.Urls.insert_url(url)
+        Scrapy.Urls.insert_url(url)
       end)
-      JB.Urls.visit!(url, body)
+      Scrapy.Urls.visit!(url, body)
     end
   end
 

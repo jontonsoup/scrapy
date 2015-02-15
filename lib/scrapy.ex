@@ -1,4 +1,4 @@
-defmodule JB do
+defmodule Scrapy do
   use Application
   require Logger
 
@@ -11,10 +11,10 @@ defmodule JB do
 
     children = [
       worker(MongoService, [db]),
-      worker(JB.Scraper, [[name: @scraper_name]])
+      worker(Scrapy.Scraper, [[name: @scraper_name]])
     ]
 
-    opts = [strategy: :one_for_one, name: JB.Supervisor]
+    opts = [strategy: :one_for_one, name: Scrapy.Supervisor]
     Supervisor.start_link(children, opts)
   end
 end

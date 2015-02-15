@@ -1,4 +1,4 @@
-defmodule JB.Urls do
+defmodule Scrapy.Urls do
   require Logger
 
   def insert_url(url) do
